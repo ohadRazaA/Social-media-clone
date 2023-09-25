@@ -8,7 +8,6 @@ import Home from './Components/home/Home';
 function App() {
   return (
     <div>
-      {/* <Navbar /> */}
       <Routes>
         <Route path='/' element={<Signup />} />
         <Route path='/login' element={<Login />} />

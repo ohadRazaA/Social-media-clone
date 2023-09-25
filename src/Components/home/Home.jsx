@@ -42,7 +42,7 @@ function Home() {
                 photo: "https://images.pexels.com/photos/17821306/pexels-photo-17821306/free-photo-of-landscape-of-hills-and-mountains.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 liked: false,
                 date: formattedDate,
-                comments: ["first comment", "second comment", "third comment", "fourth comment"]
+                comments: []
             }
 
             axios.post(url, obj)
@@ -59,7 +59,12 @@ function Home() {
         }
     }
 
-    const handleLike = (index) => {
+    const handleLike = (index, postId, postLike) => {
+        const url = `http://localhost:5000/home/${postId}`;
+        const liked = postLike ? false : true;
+        axios.put(url, { liked })
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err));
         const updatedPosts = [...allPosts];
         updatedPosts[index].liked = !updatedPosts[index].liked;
         setAllPosts(updatedPosts);
@@ -82,11 +87,15 @@ function Home() {
         }
     }
 
-    const handleComment = (index) => {
+    const handleComment = (index, postId) => {
+        const url = `http://localhost:5000/home/${postId}`;
         if (comment === "") {
             alert("Please write any comment")
         }
         else {
+            axios.patch(url, { comment })
+                .then(res => console.log(res.data))
+                .catch(err => console.log(err))
             allPosts[index].comments.push(comment);
             setComment("");
         }
@@ -182,7 +191,7 @@ function Home() {
                                     {/* like */}
                                     <p style={{ color: posts.liked ? "blue" : "black" }}
                                         id='likeText'
-                                        onClick={() => handleLike(index)} >
+                                        onClick={() => handleLike(index, posts._id, posts.liked)} >
                                         <i id='like'
                                             style={{ color: posts.liked ? "blue" : "black" }} className="fa-regular fa-thumbs-up"></i>
                                         Like </p>
@@ -199,17 +208,19 @@ function Home() {
                                                     <hr style={{ marginTop: "5px", marginBottom: "15px", borderTop: "1px solid #f0f0f0" }} />
                                                 </div>
                                                 <div className='show-comments'>
-                                                    {allPosts[index].comments.map((element) => {
-                                                        return (
-                                                            <div className='show-comment'>
-                                                                <i style={{ marginTop: "20px", }} className="fa-regular fa-circle-user fa-xl"></i>
-                                                                <div className='comments'>
-                                                                    <p style={{ fontSize: "13px", fontWeight: "600" }}>{localStorage.getItem("userName")}</p>
-                                                                    <p style={{ fontSize: "13px" }}>{element}</p>
+                                                    {
+                                                        allPosts[index].comments.map((element) => {
+                                                            return (
+                                                                <div className='show-comment'>
+                                                                    <i style={{ marginTop: "20px", }} className="fa-regular fa-circle-user fa-xl"></i>
+                                                                    <div className='comments'>
+                                                                        <p style={{ fontSize: "13px", fontWeight: "600" }}>{localStorage.getItem("userName")}</p>
+                                                                        <p style={{ fontSize: "13px" }}>{element}</p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )
-                                                    })}
+                                                            )
+                                                        })
+                                                    }
                                                 </div>
                                                 <div style={{ marginTop: "25px", display: "flex" }}>
                                                     <span><i style={{ marginTop: "16px", }} className="fa-regular fa-circle-user fa-xl"></i></span>
@@ -220,9 +231,8 @@ function Home() {
                                                             placeholder='Write a comment...'
                                                             onChange={e => setComment(e.target.value)}
                                                             value={comment} />
-                                                        <i style={{ cursor: "pointer", marginTop: "10px", marginRight: "16px" }} onClick={() => handleComment(index)} className="fa-regular fa-paper-plane fa-lg"></i>
+                                                        <i style={{ cursor: "pointer", marginTop: "10px", marginRight: "16px" }} onClick={() => handleComment(index, posts._id)} className="fa-regular fa-paper-plane fa-lg"></i>
                                                     </span>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -240,7 +250,7 @@ function Home() {
                                             placeholder='Write a comment...'
                                             onChange={e => setComment(e.target.value)}
                                             value={comment} />
-                                        <i style={{ cursor: "pointer", marginTop: "10px", marginRight: "16px" }} onClick={() => handleComment(index)} className="fa-regular fa-paper-plane fa-lg"></i>
+                                        <i style={{ cursor: "pointer", marginTop: "10px", marginRight: "16px" }} onClick={() => handleComment(index, posts._id)} className="fa-regular fa-paper-plane fa-lg"></i>
                                     </span>
 
                                 </div>

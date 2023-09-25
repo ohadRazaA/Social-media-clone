@@ -28,10 +28,33 @@ const postController = {
             res.send(selectedPost);
         }
         catch (err) {
-            res.status(500).json({message: err.message})
+            res.status(500).json({ message: err.message })
         }
-    }
+    },
+    async addComment(req, res) {
+        try {
+            const updatedPost = await postModel.findByIdAndUpdate(
+            {_id: req.params.id},
+            { $push: { comments: req.body.comment } }
+        );
 
-}
+        res.json(updatedPost);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    },
+    async addLike(req, res) {
+        try {
+            const updatedPost = await postModel.findByIdAndUpdate(
+            {_id: req.params.id},
+            { $set: { liked: req.body.liked } },
+        );
+
+        res.json(updatedPost);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    },
+};
 
 module.exports = postController

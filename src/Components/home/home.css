@@ -229,8 +229,16 @@ ul {
     scrollbar-width: thin;
     scrollbar-color: red grey;
     position: relative;
+    scroll-padding-bottom: 200px;
+    /* Set this to match the container's height */
+    scroll-snap-type: y mandatory;
 }
-
+#myForm{
+    scroll-snap-align: end;
+}
+#myForm--top {
+    scroll-snap-align: start;
+  }
 .comments-container::-webkit-scrollbar-track {
     background-color: grey;
     border-radius: 10px;
